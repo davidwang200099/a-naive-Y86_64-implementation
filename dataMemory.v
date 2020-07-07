@@ -22,6 +22,7 @@
 
 module dataMemory(
     input clock,
+    input reset,
     input [63:0] address,
     input [63:0] writeData,
     input memWrite,
@@ -29,6 +30,12 @@ module dataMemory(
     output reg [63:0] readData
     );
     reg [7:0] memFile [0:31];
+    integer i;
+    always @ (reset)
+    begin
+        for(i=0;i<32;i=i+1) memFile[i]=5;
+    end
+    
     always @ (address or memRead)
     begin
         if(memRead)

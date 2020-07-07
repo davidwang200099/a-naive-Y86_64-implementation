@@ -31,6 +31,7 @@ module Ctr(
     output reg instructionValid,
     output reg needRegids,
     output reg needValC,
+    output reg setCC,
     output reg [3:0] alufun
     );
    
@@ -38,9 +39,10 @@ module Ctr(
    begin
        if(imem_error==0)
        begin
+           setCC=0;
            icode=instruction[0:3];
            ifun=instruction[4:7];
-           alufun=(icode==4'h6)?ifun:0;
+           alufun=(instruction[0:3]==4'h6)?ifun:0;
            casex({icode,ifun})
                8'h00://halt
                begin
@@ -96,6 +98,7 @@ module Ctr(
                    else instructionValid=0;
                    needRegids=1;
                    needValC=0;
+                   setCC=1;
                    rA=instruction[8:11];
                    rB=instruction[12:15];
                end
