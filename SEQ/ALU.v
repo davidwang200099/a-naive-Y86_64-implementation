@@ -27,6 +27,7 @@ module ALU(
     output reg [63:0] valE,
     output reg [2:0] CC//ZF:SF:OF
     );
+    reg [63:0] complement;
     always @ (input1 or input2 or ALUfun)
     begin
         case(ALUfun)
@@ -38,17 +39,18 @@ module ALU(
             4'h1:
             begin
                 valE=input2-input1;
-                CC={(valE==0),(valE[63]),((input1[63]==input2[63])&&(input1[63]!=valE[63]))};
+                complement=(~input1)+1;
+                CC={(valE==0),(valE[63]),((complement[63]==input2[63])&&(complement[63]!=valE[63]))};
             end
             4'h2:
             begin
                 valE=input2&input1;
-                CC={(valE==0),(valE[63]),((input1[63]==input2[63])&&(input1[63]!=valE[63]))};
+                CC={(valE==0),(valE[63]),1'b0};
             end
             4'h3:
             begin
                 valE=input2^input1;
-                CC={(valE==0),(valE[63]),((input1[63]==input2[63])&&(input1[63]!=valE[63]))};
+                CC={(valE==0),(valE[63]),1'b0};
             end
         endcase
     end

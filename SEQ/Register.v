@@ -23,8 +23,6 @@
 module Register(
     input clock,
     input reset,
-    input regWriteE,
-    input regWriteM,
     input [3:0] readRegA,
     input [3:0] readRegB,
     input [3:0] writeRegE,
@@ -40,25 +38,21 @@ integer i;
 
 always @ (readRegA or readRegB)
 begin
-    readDataA=regFile[readRegA];
-    readDataB=regFile[readRegB];
+    if(readRegA==4'hf) readDataA=0;
+    else readDataA=regFile[readRegA];
+    if(readRegB==4'hf) readDataB=0;
+    else readDataB=regFile[readRegB];
 end
 
 always @ (posedge clock)
 begin
-    if(regWriteE)
-    begin
-        regFile[writeRegE]=writeDataE;
-    end
-    if(regWriteM)
-    begin
-        regFile[writeDataM]=writeDataM;
-    end
+    if(writeRegE!=4'hf) regFile[writeRegE]=writeDataE;
+    if(writeRegM!=4'hf) regFile[writeRegM]=writeDataM; 
 end
 
 always @(reset)
 begin
     if(reset)
-        for(i=0;i<=14;i=i+1) regFile[i]=0;
+        for(i=0;i<=14;i=i+1) regFile[i]=24;
 end
 endmodule
