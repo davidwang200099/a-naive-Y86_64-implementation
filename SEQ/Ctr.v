@@ -21,7 +21,7 @@
 
 
 module Ctr(
-    input [0:79] instruction,
+    input [79:0] instruction,
     input imem_error,
     output reg [3:0] icode,
     output reg [3:0] ifun,
@@ -40,9 +40,9 @@ module Ctr(
        if(imem_error==0)
        begin
            setCC=0;
-           icode=instruction[0:3];
-           ifun=instruction[4:7];
-           alufun=(instruction[0:3]==4'h6)?ifun:0;
+           icode=instruction[7:4];
+           ifun=instruction[3:0];
+           alufun=(instruction[7:4]==4'h6)?ifun:0;
            casex({icode,ifun})
                8'h00://halt
                begin
@@ -62,35 +62,35 @@ module Ctr(
                    else instructionValid=0;
                    needRegids=1;
                    needValC=0;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
                end
                8'h30://irmovq
                begin
                    instructionValid=1;
                    needRegids=1;
                    needValC=1;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
-                   valC={instruction[72:79],instruction[64:71],instruction[56:63],instruction[48:55],instruction[40:47],instruction[32:39],instruction[24:31],instruction[16:23]};
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
+                   valC={instruction[79:72],instruction[71:64],instruction[63:56],instruction[55:48],instruction[47:40],instruction[39:32],instruction[31:24],instruction[23:16]};
                end
                8'h40://rmmovq
                begin
                    instructionValid=1;
                    needRegids=1;
                    needValC=1;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
-                   valC={instruction[72:79],instruction[64:71],instruction[56:63],instruction[48:55],instruction[40:47],instruction[32:39],instruction[24:31],instruction[16:23]};
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
+                   valC={instruction[79:72],instruction[71:64],instruction[63:56],instruction[55:48],instruction[47:40],instruction[39:32],instruction[31:24],instruction[23:16]};
                end
                8'h50://mrmovq
                begin
                    instructionValid=1;
                    needRegids=1;
                    needValC=1;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
-                   valC={instruction[72:79],instruction[64:71],instruction[56:63],instruction[48:55],instruction[40:47],instruction[32:39],instruction[24:31],instruction[16:23]};
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
+                   valC={instruction[79:72],instruction[71:64],instruction[63:56],instruction[55:48],instruction[47:40],instruction[39:32],instruction[31:24],instruction[23:16]};
                end
                8'h6x://OPq 
                begin
@@ -99,8 +99,8 @@ module Ctr(
                    needRegids=1;
                    needValC=0;
                    setCC=1;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
                end
                8'h7x://jmp
                begin
@@ -108,14 +108,14 @@ module Ctr(
                    else instructionValid=0;
                    needRegids=0;
                    needValC=1;
-                   valC={instruction[64:71],instruction[56:63],instruction[48:55],instruction[40:47],instruction[32:39],instruction[24:31],instruction[16:23],instruction[8:15]};
+                   valC={instruction[71:64],instruction[63:56],instruction[55:48],instruction[47:40],instruction[39:32],instruction[31:24],instruction[23:16],instruction[15:8]};
                end
                8'h80://call
                begin
                    instructionValid=1;
                    needRegids=0;
                    needValC=1;
-                   valC={instruction[64:71],instruction[56:63],instruction[48:55],instruction[40:47],instruction[32:39],instruction[24:31],instruction[16:23],instruction[8:15]};
+                   valC={instruction[71:64],instruction[63:56],instruction[55:48],instruction[47:40],instruction[39:32],instruction[31:24],instruction[23:16],instruction[15:8]};
                end
                8'h90://ret
                begin
@@ -128,16 +128,16 @@ module Ctr(
                    instructionValid=1;
                    needRegids=1;
                    needValC=0;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
                end
                8'hb0://popq
                begin
                    instructionValid=1;
                    needRegids=0;
                    needValC=0;
-                   rA=instruction[8:11];
-                   rB=instruction[12:15];
+                   rB=instruction[11:8];
+                   rA=instruction[15:12];
                end
                default:
                begin

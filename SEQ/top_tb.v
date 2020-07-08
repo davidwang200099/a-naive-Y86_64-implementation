@@ -24,15 +24,14 @@ module top_tb();
     reg clock;
     reg reset;
     reg [79:0] instr;
-    top tp(.clock(clock),.reset(reset),.instr(instr));
+    top tp(.clock(clock),.reset(reset));
     
     always #50 clock=~clock;
     initial begin
+        $readmemh("data.txt",tp.datamemory.memFile);
+        $readmemh("instruction.txt",tp.instructionmemory.memFile);
         clock=1;
         reset=1;
-        instr=80'hb09f0807060504030201;
         #25 reset=0;
-        #100;
-        
     end
 endmodule

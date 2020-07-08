@@ -53,6 +53,6 @@ end
 always @(reset)
 begin
     if(reset)
-        for(i=0;i<=14;i=i+1) regFile[i]=24;
+        for(i=0;i<=14;i=i+1) regFile[i]=0;
 end
 endmodule

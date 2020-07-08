@@ -29,12 +29,7 @@ module dataMemory(
     input memRead,
     output reg [63:0] readData
     );
-    reg [7:0] memFile [0:31];
-    integer i;
-    always @ (reset)
-    begin
-        for(i=0;i<32;i=i+1) memFile[i]=5;
-    end
+    reg [7:0] memFile [0:127];
     
     always @ (address or memRead)
     begin

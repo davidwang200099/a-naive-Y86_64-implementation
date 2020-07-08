@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module top(input clock,input reset,input [79:0] instr);
+module top(input clock,input reset);
     reg [63:0] PC;
     wire IMEM_ERROR;
     wire INSTR_VALID,NEEDREGIDS,NEEDVALC,SETCC,MEMREAD,MEMWRITE;
@@ -39,11 +39,17 @@ module top(input clock,input reset,input [79:0] instr);
     wire CND;
     always @ (posedge clock)
     begin
-        if(reset) PC=64'hffffffffffffffff;
+        if(reset) PC=0;
         else PC=NEW_PC;
     end
     
-    assign INSTRUCTION=instr;
+    instructionMemory instructionmemory(
+        .clock(clock),
+        .reset(0),
+        .address(PC),
+        
+        .readData(INSTRUCTION)
+    );
     
     Ctr ctr(
         .instruction(INSTRUCTION),
@@ -101,10 +107,9 @@ module top(input clock,input reset,input [79:0] instr);
          .CC(CC_OUT)
      );
      
-     always @ (posedge clock)
+     always @ (negedge clock)
      begin
          if(SETCC) CC=CC_OUT;
-         else CC=0;
      end
      
      assign ADDRESS=(ICODE==4'h4||ICODE==4'h5||ICODE==4'h8||ICODE==4'ha)?VALE:
